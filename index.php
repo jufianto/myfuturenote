@@ -1,69 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
+<?php 
+require_once "config/conn.php";
+require_once "class/class.note.php";
+$note = new note($connect);
+require_once "header.php";
+if(isset($_GET['remove'])) /* If on url have remove or if data was succes remove*/
+ {
+  $idmd5 = $_GET['remove']; /* encrypt id with md5*/
+  echo $idmd5 . "<br>";
+  /* Search Id and if data was find remove data*/
+  foreach ($note->getAllData() as $jf) {   
+    if ($idmd5 == md5($jf->id))
+    {
+      $note->remove($jf->id);
+    }   
+  }
+ }
+?>
 
-    <title>Fixed Top Navbar Example for Bootstrap</title>
+<body>
+<?php include "menu.html"; ?>
 
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-       <!-- Custom styles for this template -->
-    <link href="css/navbar-fixed-top.css" rel="stylesheet">
-
-    <!-- 
-    Custom styles for this template
-    <link href="navbar-fixed-top.css" rel="stylesheet">
-     -->
-
-  </head>
-
-  <body>
-
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">To Do Note</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">Default</a></li>
-            <li><a href="../navbar-static-top/">Static top</a></li>
-            <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+<div class="row">
 
     <div class="container">
 
@@ -75,18 +32,28 @@
      	<div class="col-md-2"></div>
 
      	<div class="col-md-8">
-		<button class="btn btn-default" style="margin-bottom: 10px;" type="submit">Button</button>
+		<button class="btn btn-default" style="margin-bottom: 10px;" type="submit">Tambah</button>
 
      	<table class="table">
      		<tr>
+          <th>No</th>
      			<th>Idea</th>
      			<th>Label</th>
+          <th>Info</th>
      		</tr>
 
-     		<tr>
-     			<td>Kosong</td>
-     			<td>Penting</td>
-     		</tr>
+     		<?php $no = 1;
+          foreach ($note->getAllData() as $key) { 
+            ?>
+        <tr> 
+          <td><?= $no++ ?></td>
+          <td><?= $key->idea ?></td>
+          <td><?= $note->getLabel($key->label_id) ?></td>
+          <td><?= $note->getStart($key->starting) ?></td>
+          <td><a href="noteEdit.php?id=<?= $key->id ?>"><span class="glyphicon glyphicon-edit" id="edit"></span></a><label for="edit">Edit</label> </td>
+        <td><a href="note.php?remove=<?php echo md5($key->id); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+        </tr>
+        <?php } ?>
      	</table>
 
 
@@ -100,13 +67,9 @@
 
 
     </div> <!-- /container -->
+</div>
+</body>
 
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-  </body>
-</html>
+
+    <?php require_once "footer.php"; ?>

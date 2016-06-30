@@ -66,4 +66,4 @@ if(isset($_GET['remove'])) /* If on url have remove or if data was succes remove
 </body>
 
 
-<?php require_once "footer.php";
+<?php require_once "footer.php"; ?>
